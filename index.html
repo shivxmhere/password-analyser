@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PassIQ — Password Strength Analyser + Secure Generator</title>
+  <meta name="description" content="Real-time password strength analysis powered by NIST cybersecurity guidelines. Analyse entropy, crack time, and pattern detection. Generate cryptographically secure passwords." />
+  <meta name="keywords" content="password strength, password analyser, secure generator, NIST guidelines, entropy, crack time, cybersecurity" />
+  <meta name="author" content="Shivam Singh, IIT Patna" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="PassIQ — Password Strength Analyser" />
+  <meta property="og:description" content="Real-time password analysis powered by NIST cybersecurity guidelines." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://passwordanalyser-day3-iitpatna.vercel.app" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="PassIQ — Password Strength Analyser" />
+  <meta name="twitter:description" content="Real-time password analysis powered by NIST cybersecurity guidelines." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ═══ NAVBAR ═══ -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+      <a href="#" class="nav-brand" id="nav-brand">
+        <span class="brand-icon">🔐</span>
+        <span class="brand-text">PassIQ</span>
+      </a>
+      <div class="nav-badge" id="nav-badge">
+        <span class="badge-dot"></span>
+        Day 3/35 · #35DaysOfProjects
+      </div>
+      <a href="https://github.com/shivxmhere/password-analyser" target="_blank" rel="noopener noreferrer" class="nav-github" id="nav-github" aria-label="GitHub Repository">
+        <i data-lucide="github"></i>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="hero" id="hero">
+    <div class="particles" id="particles" aria-hidden="true"></div>
+    <h1 class="hero-title" id="hero-title">How Strong Is Your <span class="gradient-text">Password</span>?</h1>
+    <p class="hero-subtitle" id="hero-subtitle">Real-time analysis powered by NIST cybersecurity guidelines.<br />Know your risk before it's too late.</p>
+  </section>
+
+  <!-- ═══ MAIN ANALYSER ═══ -->
+  <section class="section" id="analyser-section">
+    <div class="card analyser-card" id="analyser-card">
+      <div class="input-wrapper" id="input-wrapper">
+        <input
+          type="password"
+          id="password-input"
+          class="password-input"
+          placeholder="Enter your password…"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button class="input-toggle" id="toggle-visibility" aria-label="Toggle password visibility" type="button">
+          <i data-lucide="eye" id="eye-icon"></i>
+        </button>
+        <span class="char-counter" id="char-counter">0 / ∞</span>
+      </div>
+
+      <!-- Strength Meter -->
+      <div class="meter-container" id="meter-container">
+        <div class="meter-bar">
+          <div class="meter-segment" id="seg-1"></div>
+          <div class="meter-segment" id="seg-2"></div>
+          <div class="meter-segment" id="seg-3"></div>
+          <div class="meter-segment" id="seg-4"></div>
+          <div class="meter-segment" id="seg-5"></div>
+        </div>
+        <div class="meter-info">
+          <span class="meter-label" id="meter-label">ENTER A PASSWORD</span>
+          <span class="meter-score" id="meter-score">Score: <span id="score-value">0</span>/100</span>
+        </div>
+      </div>
+
+      <!-- Save to Vault -->
+      <button class="btn btn-save" id="btn-save-vault" type="button" disabled>
+        <i data-lucide="lock"></i>
+        Save to Vault
+      </button>
+
+      <!-- Crack Time Panel -->
+      <div class="crack-panel" id="crack-panel">
+        <div class="crack-card" id="crack-online">
+          <span class="crack-icon">🖥️</span>
+          <span class="crack-title">Online Attack</span>
+          <span class="crack-sub">1,000 attempts/sec</span>
+          <span class="crack-value" id="crack-online-val">—</span>
+        </div>
+        <div class="crack-card" id="crack-offline">
+          <span class="crack-icon">💻</span>
+          <span class="crack-title">Offline Attack</span>
+          <span class="crack-sub">1 billion attempts/sec</span>
+          <span class="crack-value" id="crack-offline-val">—</span>
+        </div>
+        <div class="crack-card" id="crack-gpu">
+          <span class="crack-icon">⚡</span>
+          <span class="crack-title">GPU Cluster</span>
+          <span class="crack-sub">100 billion attempts/sec</span>
+          <span class="crack-value" id="crack-gpu-val">—</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ANALYSIS BREAKDOWN ═══ -->
+  <section class="section" id="breakdown-section">
+    <div class="card breakdown-card" id="breakdown-card">
+      <h2 class="card-title" id="breakdown-title">
+        <i data-lucide="shield-check"></i>
+        Why This Score?
+      </h2>
+
+      <!-- Rules Checklist -->
+      <div class="rules-list" id="rules-list">
+        <div class="rule-item" id="rule-len8" data-rule="minLength8">
+          <span class="rule-icon">❌</span>
+          <span class="rule-label">Minimum 8 characters</span>
+          <span class="rule-pts" id="pts-len8">+20 pts</span>
+        </div>
+        <div class="rule-item" id="rule-len12" data-rule="minLength12">
+          <span class="rule-icon">❌</span>
+          <span class="rule-label">Minimum 12 characters <small>(NIST recommended)</small></span>
+          <span class="rule-pts" id="pts-len12">+30 pts</span>
+        </div>
+        <div class="rule-item" id="rule-upper" data-rule="hasUppercase">
+          <span class="rule-icon">❌</span>
+          <span class="rule-label">Contains uppercase letters</span>
+          <span class="rule-pts" id="pts-upper">+10 pts</span>
+        </div>
+        <div class="rule-item" id="rule-lower" data-rule="hasLowercase">
+          <span class="rule-icon">❌</span>
+          <span class="rule-label">Contains lowercase letters</span>
+          <span class="rule-pts" id="pts-lower">+10 pts</span>
+        </div>
+        <div class="rule-item" id="rule-nums" data-rule="hasNumbers">
+          <span class="rule-icon">❌</span>
+          <span class="rule-label">Contains numbers</span>
+          <span class="rule-pts" id="pts-nums">+10 pts</span>
+        </div>
+        <div class="rule-item" id="rule-syms" data-rule="hasSymbols">
+          <span class="rule-icon">❌</span>
+          <span class="rule-label">Contains special characters</span>
+          <span class="rule-pts" id="pts-syms">+15 pts</span>
+        </div>
+        <div class="rule-item" id="rule-kb" data-rule="noKeyboardWalk">
+          <span class="rule-icon">❌</span>
+          <span class="rule-label">No keyboard walk detected</span>
+          <span class="rule-pts" id="pts-kb">−20 pts</span>
+        </div>
+        <div class="rule-item" id="rule-common" data-rule="noCommonPattern">
+          <span class="rule-icon">❌</span>
+          <span class="rule-label">No common password patterns</span>
+          <span class="rule-pts" id="pts-common">−15 pts</span>
+        </div>
+      </div>
+
+      <!-- Pattern Warnings -->
+      <div class="pattern-warnings" id="pattern-warnings"></div>
+
+      <!-- Entropy Display -->
+      <div class="entropy-box" id="entropy-box">
+        <div class="entropy-header">
+          <span class="entropy-label">Entropy: <strong id="entropy-value">0.0</strong> bits</span>
+          <span class="entropy-tooltip" id="entropy-tooltip" aria-label="Entropy measures true randomness. NIST recommends 80+ bits for high-security passwords.">
+            <i data-lucide="info"></i>
+          </span>
+        </div>
+        <div class="entropy-bar-track">
+          <div class="entropy-bar-fill" id="entropy-bar-fill"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SECURE GENERATOR ═══ -->
+  <section class="section" id="generator-section">
+    <div class="card generator-card" id="generator-card">
+      <h2 class="card-title" id="generator-title">
+        <i data-lucide="wand-2"></i>
+        Generate Secure Password
+      </h2>
+
+      <div class="gen-options" id="gen-options">
+        <div class="gen-slider-group">
+          <label class="gen-slider-label" for="gen-length">Length</label>
+          <input type="range" id="gen-length" class="gen-slider" min="8" max="64" value="16" />
+          <span class="gen-length-pill" id="gen-length-pill">16 chars</span>
+        </div>
+        <div class="gen-toggles">
+          <label class="toggle-label" id="toggle-upper-label">
+            <input type="checkbox" id="gen-upper" checked />
+            <span class="toggle-switch"></span>
+            Uppercase (A-Z)
+          </label>
+          <label class="toggle-label" id="toggle-lower-label">
+            <input type="checkbox" id="gen-lower" checked />
+            <span class="toggle-switch"></span>
+            Lowercase (a-z)
+          </label>
+          <label class="toggle-label" id="toggle-nums-label">
+            <input type="checkbox" id="gen-nums" checked />
+            <span class="toggle-switch"></span>
+            Numbers (0-9)
+          </label>
+          <label class="toggle-label" id="toggle-syms-label">
+            <input type="checkbox" id="gen-syms" checked />
+            <span class="toggle-switch"></span>
+            Symbols (!@#$)
+          </label>
+        </div>
+      </div>
+
+      <div class="gen-output" id="gen-output">
+        <div class="gen-password-display" id="gen-password-display">
+          <span class="gen-password-text blurred" id="gen-password-text">Click "Generate" to start</span>
+        </div>
+        <div class="gen-strength-preview" id="gen-strength-preview">
+          <div class="gen-mini-meter">
+            <div class="gen-mini-segment" id="gen-seg-1"></div>
+            <div class="gen-mini-segment" id="gen-seg-2"></div>
+            <div class="gen-mini-segment" id="gen-seg-3"></div>
+            <div class="gen-mini-segment" id="gen-seg-4"></div>
+            <div class="gen-mini-segment" id="gen-seg-5"></div>
+          </div>
+          <span class="gen-mini-label" id="gen-mini-label">—</span>
+        </div>
+        <div class="gen-actions">
+          <button class="btn btn-reveal" id="btn-reveal" type="button">
+            <i data-lucide="eye"></i> Reveal
+          </button>
+          <button class="btn btn-copy" id="btn-copy-gen" type="button">
+            <i data-lucide="copy"></i> Copy
+          </button>
+          <button class="btn btn-send" id="btn-send-analyser" type="button">
+            <i data-lucide="arrow-up-right"></i> Analyse
+          </button>
+        </div>
+      </div>
+
+      <button class="btn btn-generate" id="btn-generate" type="button">
+        <i data-lucide="refresh-cw"></i>
+        Generate New
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══ VAULT ═══ -->
+  <section class="section" id="vault-section">
+    <div class="card vault-card" id="vault-card">
+      <h2 class="card-title" id="vault-title">
+        <i data-lucide="lock"></i>
+        Saved Passwords
+      </h2>
+      <div class="vault-list" id="vault-list">
+        <!-- rendered by JS -->
+      </div>
+      <div class="vault-empty" id="vault-empty">
+        <i data-lucide="lock" class="vault-empty-icon"></i>
+        <p>Your vault is empty.<br/>Generate and save secure passwords above.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TIPS ═══ -->
+  <section class="section" id="tips-section">
+    <h2 class="section-heading" id="tips-heading">NIST Password Guidelines 2024</h2>
+    <div class="tips-grid" id="tips-grid">
+      <div class="tip-card" id="tip-1">
+        <span class="tip-icon">💡</span>
+        <h3>Length beats complexity</h3>
+        <p>A 20-character simple passphrase is stronger than a 10-character complex password.</p>
+      </div>
+      <div class="tip-card" id="tip-2">
+        <span class="tip-icon">🚫</span>
+        <h3>Avoid predictable patterns</h3>
+        <p>Password1! follows a pattern hackers know. Substituting @ for a fools nobody.</p>
+      </div>
+      <div class="tip-card" id="tip-3">
+        <span class="tip-icon">🔄</span>
+        <h3>Use a password manager</h3>
+        <p>The only secure way to have unique passwords everywhere. Never reuse passwords.</p>
+      </div>
+      <div class="tip-card" id="tip-4">
+        <span class="tip-icon">🎲</span>
+        <h3>True randomness wins</h3>
+        <p>Humans are bad at random. Let a generator create your passwords.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="footer" id="footer">
+    <p>Built by <strong>Shivam Singh</strong> · IIT Patna · Day 3/35 · <span class="gradient-text">#35DaysOfProjects</span></p>
+  </footer>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
